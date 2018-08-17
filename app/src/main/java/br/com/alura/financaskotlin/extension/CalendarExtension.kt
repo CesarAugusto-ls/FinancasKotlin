@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun Calendar.formataParaBrasileiro() : String{
-    val formatoBrasileiroData = "dd/mm/yyyy"
+    val formatoBrasileiroData = "dd/MM/yyyy"
     val format = SimpleDateFormat(formatoBrasileiroData)
     return format.format(time)
 }
