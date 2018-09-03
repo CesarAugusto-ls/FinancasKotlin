@@ -40,7 +40,7 @@ class ListaTransacoesAdapter(private val transacoes: List<Transacao>,
     }
 
     private fun adicionaIcone(transacao: Transacao, viewCriada: View) {
-        val icone = iconePorTipo(transacao.Tipo)
+        val icone = iconePorTipo(transacao.tipo)
         viewCriada.transacao_icone.setBackgroundResource(icone)
     }
 
@@ -53,7 +53,7 @@ class ListaTransacoesAdapter(private val transacoes: List<Transacao>,
 
     private fun adicionaValor(transacao: Transacao, viewCriada: View) {
 
-        var cor: Int = corPorTipo(transacao.Tipo)
+        var cor: Int = corPorTipo(transacao.tipo)
         viewCriada.transacao_valor.setTextColor(cor)
         viewCriada.transacao_valor.text = transacao.valor.formataParaBrasileiro()
     }
