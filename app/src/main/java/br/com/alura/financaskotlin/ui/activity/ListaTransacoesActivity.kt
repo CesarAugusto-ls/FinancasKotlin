@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup
 import br.com.alura.financaskotlin.R
 import br.com.alura.financaskotlin.delegate.TransacaoDelegate
+import br.com.alura.financaskotlin.model.Tipo
 import br.com.alura.financaskotlin.model.Transacao
 import br.com.alura.financaskotlin.ui.ResumoView
 import br.com.alura.financaskotlin.ui.adapter.ListaTransacoesAdapter
@@ -21,20 +22,27 @@ class ListaTransacoesActivity : AppCompatActivity() {
 
         configuraResumo()
         configuraLista()
+        configuraFab()
+    }
 
+    private fun configuraFab() {
         lista_transacoes_adiciona_receita.setOnClickListener {
-            AdicionaTransacaoDialog(window.decorView as ViewGroup, this)
-                    .configuraDialog(object : TransacaoDelegate {
-                        override fun delegate(transacao: Transacao) {
-                            atualizaTransacoes(transacao)
-                            lista_transacoes_adiciona_menu.close(true)
-                        }
-                    })
-
+            chamaDialogDeAdicao(Tipo.RECEITA)
+        }
+        lista_transacoes_adiciona_despesa.setOnClickListener {
+            chamaDialogDeAdicao(Tipo.DESPESA)
         }
     }
 
-
+    private fun chamaDialogDeAdicao(tipo: Tipo) {
+        AdicionaTransacaoDialog(window.decorView as ViewGroup, this)
+                .chama(tipo, object : TransacaoDelegate {
+                    override fun delegate(transacao: Transacao) {
+                        atualizaTransacoes(transacao)
+                        lista_transacoes_adiciona_menu.close(true)
+                    }
+                })
+    }
 
     fun atualizaTransacoes(transacao: Transacao) {
         transacoes.add(transacao)
