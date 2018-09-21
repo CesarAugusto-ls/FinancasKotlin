@@ -2,10 +2,11 @@ package br.com.alura.financaskotlin.ui.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
+import android.view.Menu
+import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.AdapterView
 import br.com.alura.financaskotlin.R
-import br.com.alura.financaskotlin.delegate.TransacaoDelegate
 import br.com.alura.financaskotlin.model.Tipo
 import br.com.alura.financaskotlin.model.Transacao
 import br.com.alura.financaskotlin.ui.ResumoView
@@ -41,12 +42,11 @@ class ListaTransacoesActivity : AppCompatActivity() {
 
     private fun chamaDialogDeAdicao(tipo: Tipo) {
         AdicionaTransacaoDialog(viewDaActivity as ViewGroup, this)
-                .chama(tipo, object : TransacaoDelegate {
-                    override fun delegate(transacao: Transacao) {
-                        adiciona(transacao)
-                        lista_transacoes_adiciona_menu.close(true)
-                    }
-                })
+                .chama(tipo) {transacaoCriada ->
+                    adiciona(transacaoCriada)
+                    lista_transacoes_adiciona_menu.close(true)
+                }
+
     }
 
     private fun adiciona(transacao: Transacao) {
@@ -72,17 +72,32 @@ class ListaTransacoesActivity : AppCompatActivity() {
                 val transacao = transacoes[posicao]
                 chamaDialogAlteracao(transacao, posicao)
             }
+            setOnCreateContextMenuListener { menu, _, _ ->
+                menu.add(Menu.NONE, 1, Menu.NONE, "Remover")
+            }
         }
+    }
+
+    override fun onContextItemSelected(item: MenuItem?): Boolean {
+        val idDoMenu = item?.itemId
+        if(idDoMenu == 1){
+            val adapterMenuInfo = item.menuInfo as AdapterView.AdapterContextMenuInfo
+            val posicaoDaTransacao = adapterMenuInfo.position
+            remove(posicaoDaTransacao)
+        }
+        return super.onContextItemSelected(item)
+    }
+
+    private fun remove(posicao: Int) {
+        transacoes.removeAt(posicao)
+        atualizaTransacoes()
     }
 
     private fun chamaDialogAlteracao(transacao: Transacao, posicao: Int) {
         AlteraTransacaoDialog(viewDaActivity as ViewGroup, this)
-                .chama(transacao, object : TransacaoDelegate {
-                    override fun delegate(transacao: Transacao) {
-                        altera(transacao, posicao)
-                    }
-
-                })
+                .chama(transacao) { transacaoAlterada ->
+                    altera(transacaoAlterada, posicao)
+                }
     }
 
     private fun altera(transacao: Transacao, posicao: Int) {

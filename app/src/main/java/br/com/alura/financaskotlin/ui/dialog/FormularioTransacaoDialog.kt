@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import br.com.alura.financaskotlin.R
-import br.com.alura.financaskotlin.delegate.TransacaoDelegate
 import br.com.alura.financaskotlin.extension.conveteParaCalendar
 import br.com.alura.financaskotlin.extension.formataParaBrasileiro
 import br.com.alura.financaskotlin.model.Tipo
@@ -30,13 +29,13 @@ abstract class FormularioTransacaoDialog(private val context: Context,
 
     abstract protected val tituloBotaoPositivo: String
 
-    fun chama(tipo: Tipo, transacaoDelegate: TransacaoDelegate) {
+    fun chama(tipo: Tipo, delegate: (Transacao) -> Unit) {
         configuraCampoData()
         configuraCampoCategoria(tipo)
-        configuraFormulario(tipo, transacaoDelegate)
+        configuraFormulario(tipo, delegate)
     }
 
-    private fun configuraFormulario(tipo: Tipo, transacaoDelegate: TransacaoDelegate) {
+    private fun configuraFormulario(tipo: Tipo, delegate: (Transacao) -> Unit) {
         val titulo = tituloPor(tipo)
 
         AlertDialog.Builder(context)
@@ -56,7 +55,7 @@ abstract class FormularioTransacaoDialog(private val context: Context,
                             data = data,
                             categoria = categoriaEmTexto)
 
-                    transacaoDelegate.delegate(transacaoCriada)
+                    delegate(transacaoCriada)
                 }
                 .setNegativeButton("Cancelar", null)
                 .show()
